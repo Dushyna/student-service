@@ -52,11 +52,13 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public StudentCredentialsDto updateStudent(Long id, StudentUpdateDto studentUpdateDto) {
         Student student = studentRepository.findById(id).orElseThrow(NotFoundException::new);
-        Student newStudent = new Student(id, studentUpdateDto.getName(),
-                studentUpdateDto.getPassword());
-        studentRepository.save(newStudent);
-        return new StudentCredentialsDto(newStudent.getId(), newStudent.getName(), newStudent.getPassword());
-
+        if (!studentUpdateDto.getName().isEmpty()) student.setName(studentUpdateDto.getName());
+        if (!studentUpdateDto.getPassword().isEmpty()) student.setPassword(studentUpdateDto.getPassword());
+        //  Student newStudent = new Student(id, studentUpdateDto.getName(),
+        //       studentUpdateDto.getPassword());
+        // studentRepository.save(newStudent);
+        // return new StudentCredentialsDto(newStudent.getId(), newStudent.getName(), newStudent.getPassword());
+        return new StudentCredentialsDto(student.getId(), student.getName(), student.getPassword());
     }
 
     @Override
