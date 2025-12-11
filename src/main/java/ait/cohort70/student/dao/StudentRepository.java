@@ -4,6 +4,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import ait.cohort70.student.model.Student;
 import org.springframework.data.mongodb.repository.Query;
 
+import java.util.Set;
 import java.util.stream.Stream;
 
 
@@ -11,5 +12,6 @@ public interface StudentRepository extends MongoRepository<Student, Long> {
 Stream<Student> findByNameIgnoreCase(String name);
 @Query("{'scores.?0':{'$gt':?1}}")
 Stream<Student> findByExamNameAndScoreGreaterThan(String exam, Integer score);
+Long countByNameIgnoreCaseIn(Set<String> names);
 
 }
