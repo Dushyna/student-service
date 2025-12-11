@@ -52,13 +52,14 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public StudentCredentialsDto updateStudent(Long id, StudentUpdateDto studentUpdateDto) {
         Student student = studentRepository.findById(id).orElseThrow(NotFoundException::new);
-        if (!studentUpdateDto.getName().isEmpty()) student.setName(studentUpdateDto.getName());
-        if (!studentUpdateDto.getPassword().isEmpty()) student.setPassword(studentUpdateDto.getPassword());
-        //  Student newStudent = new Student(id, studentUpdateDto.getName(),
-        //       studentUpdateDto.getPassword());
-        // studentRepository.save(newStudent);
-        // return new StudentCredentialsDto(newStudent.getId(), newStudent.getName(), newStudent.getPassword());
-        return new StudentCredentialsDto(student.getId(), student.getName(), student.getPassword());
+//        if (!studentUpdateDto.getName().isEmpty()) student.setName(studentUpdateDto.getName());
+//        if (!studentUpdateDto.getPassword().isEmpty()) student.setPassword(studentUpdateDto.getPassword());
+          Student newStudent = new Student(id, studentUpdateDto.getName(),
+               studentUpdateDto.getPassword());
+         studentRepository.save(newStudent);
+         return new StudentCredentialsDto(newStudent.getId(), newStudent.getName(), newStudent.getPassword());
+//        studentRepository.save(student);
+//        return new StudentCredentialsDto(student.getId(), student.getName(), student.getPassword());
     }
 
     @Override
@@ -70,8 +71,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public List<StudentDto> findStudentsByName(String name) {
-        return studentRepository.findAll().stream()
-                .filter(x -> x.getName().equalsIgnoreCase(name))
+        return studentRepository.findByNameIgnoreCase(name)
                 .map(x -> new StudentDto(x.getId(), x.getName(), x.getScores())).toList();
     }
 
@@ -85,16 +85,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public List<StudentDto> findStudentsByExamNameMinScore(String examName, Integer minScore) {
-        return studentRepository.findAll().stream()
-                .filter(x -> {
-                    Map<String, Integer> scores = x.getScores();
-
-                    if (scores.containsKey(examName)) {
-                        Integer actualScore = scores.get(examName);
-                        return actualScore != null && actualScore >= minScore;
-                    }
-                    return false;
-                })
+        return studentRepository.findByExamNameAndScoreGreaterThan(examName, minScore)
                 .map(x -> new StudentDto(x.getId(), x.getName(), x.getScores())).toList();
     }
 }

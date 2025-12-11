@@ -1,22 +1,15 @@
 package ait.cohort70.student.dao;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-import ait.cohort70.student.dto.ScoreDto;
 import ait.cohort70.student.model.Student;
+import org.springframework.data.mongodb.repository.Query;
 
-import java.awt.*;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.stream.Stream;
 
-public interface StudentRepository {
 
-    Student save(Student student);
-
-    Optional<Student> findById(Long id);
-
-    void deleteById(Long id);
-
-    List<Student> findAll();
+public interface StudentRepository extends MongoRepository<Student, Long> {
+Stream<Student> findByNameIgnoreCase(String name);
+@Query("{'scores.?0':{'$gt':?1}}")
+Stream<Student> findByExamNameAndScoreGreaterThan(String exam, Integer score);
 
 }

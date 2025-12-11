@@ -41,6 +41,7 @@ public class StudentController {
     }
 
     @PatchMapping("/score/student/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public StudentDto addScore(@PathVariable Long id, @RequestBody ScoreDto scoreDto) {
         studentService.addScore(id, scoreDto);
         return studentService.findStudent(id);
